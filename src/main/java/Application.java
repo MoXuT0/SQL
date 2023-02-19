@@ -5,7 +5,6 @@ import java.sql.*;
 public class Application {
 
     public static void main(String[] args) {
-
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM employee WHERE id = 1")) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -21,7 +20,6 @@ public class Application {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 }

@@ -17,13 +17,14 @@ public class EmployeeDaoImpl implements EmployeeDao {
     private static final String FIND_LAST_EMPLOYEE = "SELECT * FROM employee ORDER BY id DESC LIMIT 1";
     private static final String FIND_BY_ID = "SELECT * FROM employee WHERE id = ?";
     private static final String FIND_ALL = "SELECT * FROM employee";
-    private static final String UPDATE = "UPDATE employee SET first_name = ?, last_name = ?, gender = ?, age = ?, city_id = ?";
+    private static final String UPDATE_BY_ID = "UPDATE employee SET first_name = ?, last_name = ?, gender = ?, age = ?, city_id = ? WHERE id = ?";
+    private static final String DELETE_BY_ID = "DELETE FROM employee WHERE id = ?";
 
     private final CityDao cityDao = new CityDaoImpl();
 
     @Override
     public Optional<Employee> add(Employee employee) {
-        int cityId;
+        int cityId = 0;
         if (employee.getCity() != null && cityDao.findById(employee.getCity().getCityId()).isPresent()) {
             cityId = employee.getCity().getCityId();
         }
@@ -33,7 +34,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             preparedStatement.setString(2, employee.getLastName());
             preparedStatement.setString(3, employee.getGender());
             preparedStatement.setInt(4, employee.getAge());
-            preparedStatement.setObject(5, employee.getCity());
+            preparedStatement.setObject(5, cityId);
             if (preparedStatement.executeUpdate() != 0) {
                 try (Statement findLastStatement = connection.createStatement();
                 ResultSet resultSet = findLastStatement.executeQuery(FIND_LAST_EMPLOYEE)) {
@@ -44,7 +45,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return Optional.empty();
     }
@@ -80,12 +81,42 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
-    public Optional<Employee> updateById(int id) {
+    public Optional<Employee> update(Employee employee) {
+        int cityId = 0;
+        if (employee.getCity() != null && cityDao.findById(employee.getCity().getCityId()).isPresent()) {
+            cityId = employee.getCity().getCityId();
+        }
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BY_ID)) {
+            preparedStatement.setString(1, employee.getFirstName());
+            preparedStatement.setString(2, employee.getLastName());
+            preparedStatement.setString(3, employee.getGender());
+            preparedStatement.setInt(4, employee.getAge());
+            preparedStatement.setObject(5, cityId);
+            preparedStatement.setInt(6, employee.getId());
+            if (preparedStatement.executeUpdate() != 0) {
+                return getById(employee.getId());
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return Optional.empty();
     }
 
     @Override
     public Optional<Employee> deleteById(int id) {
+        Optional<Employee> employeeOptional = getById(id);
+        if (employeeOptional.isPresent()) {
+            try (Connection connection = ConnectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_ID)) {
+                preparedStatement.setInt(1, id);
+                if (preparedStatement.executeUpdate() != 0) {
+                    return employeeOptional;
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
         return Optional.empty();
     }
 

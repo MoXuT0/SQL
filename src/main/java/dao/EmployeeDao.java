@@ -10,7 +10,7 @@ public interface EmployeeDao {
     Optional<Employee> add(Employee employee);
     Optional<Employee> getById(int id);
     List<Employee> getAll();
-    Optional<Employee> updateById(int id);
+    Optional<Employee> update(Employee employee);
     Optional<Employee> deleteById(int id);
 
 }

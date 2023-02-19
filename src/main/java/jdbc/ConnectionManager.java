@@ -8,7 +8,7 @@ public class ConnectionManager {
 
     private static final String URL = "jdbc:postgresql://localhost:5432/skypro";
     private static final String USER = "postgres";
-    private static final String PASSWORD = "Zolushka";
+    private static final String PASSWORD = "123";
 
     private ConnectionManager() {
     }

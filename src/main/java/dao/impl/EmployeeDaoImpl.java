@@ -17,7 +17,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
     private static final String FIND_LAST_EMPLOYEE = "SELECT * FROM employee ORDER BY id DESC LIMIT 1";
     private static final String FIND_BY_ID = "SELECT * FROM employee WHERE id = ?";
     private static final String FIND_ALL = "SELECT * FROM employee";
-    private static final String UPDATE_BY_ID = "UPDATE employee SET first_name = ?, last_name = ?, gender = ?, age = ?, city_id = ? WHERE id = ?";
+    private static final String UPDATE = "UPDATE employee SET first_name = ?, last_name = ?, gender = ?, age = ?, city_id = ? WHERE id = ?";
     private static final String DELETE_BY_ID = "DELETE FROM employee WHERE id = ?";
 
     private final CityDao cityDao = new CityDaoImpl();
@@ -87,7 +87,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             cityId = employee.getCity().getCityId();
         }
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BY_ID)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE)) {
             preparedStatement.setString(1, employee.getFirstName());
             preparedStatement.setString(2, employee.getLastName());
             preparedStatement.setString(3, employee.getGender());

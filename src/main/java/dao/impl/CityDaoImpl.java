@@ -28,7 +28,6 @@ public class CityDaoImpl implements CityDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 }

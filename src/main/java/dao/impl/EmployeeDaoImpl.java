@@ -24,7 +24,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public Optional<Employee> add(Employee employee) {
-        int cityId = 0;
+        Integer cityId = null;
         if (employee.getCity() != null && cityDao.findById(employee.getCity().getCityId()).isPresent()) {
             cityId = employee.getCity().getCityId();
         }
@@ -82,7 +82,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public Optional<Employee> update(Employee employee) {
-        int cityId = 0;
+        Integer cityId = null;
         if (employee.getCity() != null && cityDao.findById(employee.getCity().getCityId()).isPresent()) {
             cityId = employee.getCity().getCityId();
         }
@@ -121,9 +121,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     private Employee readEmployee(ResultSet resultSet) throws SQLException {
-        int cityId = resultSet.getObject("city_id", int.class);
+        Integer cityId = resultSet.getObject("city_id", Integer.class);
         City city = null;
-        if (cityId != 0) {
+        if (cityId != null) {
             city = cityDao.findById(cityId).orElse(null);
         }
         return new Employee(

@@ -1,5 +1,6 @@
 package dao.impl;
 
+import dao.CityDao;
 import dao.EmployeeDao;
 import hibernate.HibernateSessionFactoryUtil;
 import model.Employee;
@@ -12,8 +13,13 @@ import java.util.Optional;
 
 public class EmployeeDaoImpl implements EmployeeDao {
 
+    private final CityDao cityDao = new CityDaoImpl();
+
     @Override
     public Employee add(Employee employee) {
+        if (employee.getCity() != null && cityDao.getById(employee.getCity().getCityId()).isEmpty()) {
+            employee.setCity(null);
+        }
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             Serializable createdId = session.save(employee);
@@ -39,6 +45,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public Employee update(Employee employee) {
+        if (employee.getCity() != null && cityDao.getById(employee.getCity().getCityId()).isEmpty()) {
+            employee.setCity(null);
+        }
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.update(employee);

@@ -1,6 +1,11 @@
+import dao.CityDao;
 import dao.EmployeeDao;
+import dao.impl.CityDaoImpl;
 import dao.impl.EmployeeDaoImpl;
+import model.City;
 import model.Employee;
+
+import java.util.List;
 
 
 public class Application {
@@ -10,25 +15,16 @@ public class Application {
         System.out.println("Задание 1");
 
         EmployeeDao employeeDao = new EmployeeDaoImpl();
+        CityDao cityDao = new CityDaoImpl();
 
-        Employee anton = employeeDao.add(new Employee("Anton", "Antonov", "male", 32, 4));
-        System.out.println("Добавленный сотрудник - " + anton);
-        Employee petr = employeeDao.add(new Employee("Petr", "Petrov", "male", 39, 5));
-        System.out.println("Добавленный сотрудник - " + petr);
+        City samara = new City("Samara");
 
-        System.out.println("Все сотрудники");
-        employeeDao.getAll().forEach(System.out::println);
+        List<Employee> employees = List.of(new Employee("Anton", "Antonov", "male", 32, samara),
+                new Employee("Petr", "Petrov", "male", 39, samara));
 
-        employeeDao.getById(petr.getId())
-                .ifPresent(employee -> System.out.println("Найденный сотрудник - " + employee));
+        samara.setEmployees(employees);
 
-        petr.setAge(29);
-        petr.setLastName("Vasyliev");
-        petr = employeeDao.update(petr);
-        System.out.println("Обновленный сотрудник - " + petr);
-
-        employeeDao.delete(petr)
-                .ifPresent(employee -> System.out.println("Удаленный - " + employee));
+        cityDao.add(samara);
 
     }
 

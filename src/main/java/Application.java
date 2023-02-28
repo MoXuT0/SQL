@@ -1,6 +1,11 @@
+import dao.CityDao;
 import dao.EmployeeDao;
+import dao.impl.CityDaoImpl;
 import dao.impl.EmployeeDaoImpl;
+import model.City;
 import model.Employee;
+
+import java.util.List;
 
 
 public class Application {
@@ -10,25 +15,30 @@ public class Application {
         System.out.println("Задание 1");
 
         EmployeeDao employeeDao = new EmployeeDaoImpl();
+        CityDao cityDao = new CityDaoImpl();
 
-        Employee anton = employeeDao.add(new Employee("Anton", "Antonov", "male", 32, 4));
-        System.out.println("Добавленный сотрудник - " + anton);
-        Employee petr = employeeDao.add(new Employee("Petr", "Petrov", "male", 39, 5));
-        System.out.println("Добавленный сотрудник - " + petr);
+        City city = new City("Vladivostok");
 
-        System.out.println("Все сотрудники");
+        List<Employee> employees = List.of(new Employee("Anton", "Antonov", "male", 32, city),
+                new Employee("Petr", "Petrov", "male", 39, city));
+
+        city.setEmployees(employees);
+
+        cityDao.add(city);
         employeeDao.getAll().forEach(System.out::println);
 
-        employeeDao.getById(petr.getId())
-                .ifPresent(employee -> System.out.println("Найденный сотрудник - " + employee));
+        cityDao.getById(city.getCityId());
 
-        petr.setAge(29);
-        petr.setLastName("Vasyliev");
-        petr = employeeDao.update(petr);
-        System.out.println("Обновленный сотрудник - " + petr);
+        cityDao.getAll().forEach(System.out::println);
 
-        employeeDao.delete(petr)
-                .ifPresent(employee -> System.out.println("Удаленный - " + employee));
+        city.setCityName("Volgograd");
+        cityDao.update(city);
+        cityDao.getAll().forEach(System.out::println);
+
+        cityDao.delete(city);
+
+        employeeDao.getAll().forEach(System.out::println);
+        cityDao.getAll().forEach(System.out::println);
 
     }
 
